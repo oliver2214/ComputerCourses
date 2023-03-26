@@ -269,3 +269,4 @@ C:\Users\dimat\source\repos\ComputerCourses\ComputerCourses\bin\Debug\net6.0\run
 C:\Users\dimat\source\repos\ComputerCourses\ComputerCourses\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\dimat\source\repos\ComputerCourses\ComputerCourses\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 C:\Users\dimat\source\repos\ComputerCourses\ComputerCourses\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\dimat\source\repos\ComputerCourses\ComputerCourses\bin\Debug\net6.0\ComputerCourses.staticwebassets.runtime.json

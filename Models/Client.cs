@@ -1,4 +1,6 @@
-﻿namespace ComputerCourses.Models
+﻿using NuGet.Protocol.Plugins;
+
+namespace ComputerCourses.Models
 {
     public class Client
     {
@@ -6,6 +8,9 @@
         public string Name { get; set; }
         public string Surname { get; set; }
         public int? CourseId { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
 
+        public bool IsAdmin => Username == "admin";
     }
 }

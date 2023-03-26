@@ -14,7 +14,6 @@ namespace ComputerCourses.Controllers
     public class ClientsController : ControllerBase
     {
         private readonly CourseContext _context;
-
         public ClientsController(CourseContext context)
         {
             _context = context;
