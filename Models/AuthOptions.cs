@@ -19,7 +19,7 @@ namespace ComputerCourses.Models
             var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, "user"),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, is_admin?"admin":"guest")
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, is_admin?"admin":"auth")
                 };
             ClaimsIdentity identity =
             new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,

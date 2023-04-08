@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "n6E980ZPVo/AHSCbHV3zV7gEoIhz83AkXGAAqD5csc/LhtiXqgSRaQHOfmWgZgqTZorYJaNHCq9tkZiTzLELCQ==",
+  "dgSpecHash": "syey1WMfvOBgFELAZPtgLLZKIEdQhaGkohgljrG33xoncDxtrx9Q0OzeBgCl+3ySvtkreLIQK4d+RlJKM2GyFg==",
   "success": true,
   "projectFilePath": "C:\\Users\\dimat\\source\\repos\\ComputerCourses\\ComputerCourses\\ComputerCourses.csproj",
   "expectedPackageFiles": [
@@ -73,6 +73,8 @@
     "C:\\Users\\dimat\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\dimat\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
     "C:\\Users\\dimat\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\dimat\\.nuget\\packages\\npgsql\\6.0.8\\npgsql.6.0.8.nupkg.sha512",
+    "C:\\Users\\dimat\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\6.0.8\\npgsql.entityframeworkcore.postgresql.6.0.8.nupkg.sha512",
     "C:\\Users\\dimat\\.nuget\\packages\\nuget.common\\6.3.1\\nuget.common.6.3.1.nupkg.sha512",
     "C:\\Users\\dimat\\.nuget\\packages\\nuget.configuration\\6.3.1\\nuget.configuration.6.3.1.nupkg.sha512",
     "C:\\Users\\dimat\\.nuget\\packages\\nuget.dependencyresolver.core\\6.3.1\\nuget.dependencyresolver.core.6.3.1.nupkg.sha512",

@@ -10,7 +10,7 @@ namespace ComputerCourses.Models
         public int? CourseId { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-
-        public bool IsAdmin => Username == "admin";
+        public string Role { get; set; }
+        public bool IsAdmin => Role == "admin";
     }
 }

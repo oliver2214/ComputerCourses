@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComputerCourses.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ComputerCourses.Controllers
 {
@@ -21,6 +22,7 @@ namespace ComputerCourses.Controllers
 
         // GET: api/Clients
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<Client>>> GetClients()
         {
             return await _context.Clients.ToListAsync();

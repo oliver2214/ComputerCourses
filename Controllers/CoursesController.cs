@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComputerCourses.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ComputerCourses.Controllers
 {
@@ -44,6 +45,7 @@ namespace ComputerCourses.Controllers
         // PUT: api/Courses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> PutCourse(int id, Course course)
         {
             if (id != course.Id)
@@ -75,6 +77,7 @@ namespace ComputerCourses.Controllers
         // POST: api/Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<Course>> PostCourse(Course course)
         {
             _context.Courses.Add(course);
@@ -85,6 +88,7 @@ namespace ComputerCourses.Controllers
 
         // DELETE: api/Courses/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteCourse(int id)
         {
             var course = await _context.Courses.FindAsync(id);
