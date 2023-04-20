@@ -45,7 +45,7 @@ namespace ComputerCourses.Controllers
         // PUT: api/Courses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, teacher")]
         public async Task<IActionResult> PutCourse(int id, Course course)
         {
             if (id != course.Id)
@@ -77,7 +77,7 @@ namespace ComputerCourses.Controllers
         // POST: api/Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, teacher")]
         public async Task<ActionResult<Course>> PostCourse(Course course)
         {
             _context.Courses.Add(course);
@@ -107,5 +107,7 @@ namespace ComputerCourses.Controllers
         {
             return _context.Courses.Any(e => e.Id == id);
         }
+
+        
     }
 }

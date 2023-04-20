@@ -12,6 +12,7 @@ namespace ComputerCourses.Models
         public DbSet<Course> Courses { get; set; } = null;
         public DbSet<Teacher> Teachers { get; set; } = null;
         public DbSet<Client> Clients { get; set; } = null;
+        public DbSet<Description> Descriptions { get; set; } = null;
     }
 
 }

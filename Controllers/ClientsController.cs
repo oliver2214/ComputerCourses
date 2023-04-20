@@ -30,6 +30,7 @@ namespace ComputerCourses.Controllers
 
         // GET: api/Clients/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Client>> GetClient(int id)
         {
             var client = await _context.Clients.FindAsync(id);
@@ -42,9 +43,35 @@ namespace ComputerCourses.Controllers
             return client;
         }
 
+        //GET: api/Clients/5
+        [HttpGet("/get2/{id}")]
+        public async Task<ActionResult<Course>> GetCourse2(int id)
+        {
+            var Course = await _context.Courses
+        .Where(c => c.Id == id)
+        .FirstOrDefaultAsync();
+
+            if (Course == null)
+            {
+                return NotFound();
+            }
+
+            return Course;
+        }
+
+        [HttpGet("/test1")]
+        public async Task<ActionResult<IEnumerable<Client>>> Gettest1()
+        {
+            var clients = await _context.Clients
+        .Select(c => new { c.Name, c.Surname })
+        .ToListAsync();
+            return Ok(clients);
+        }
+
         // PUT: api/Clients/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutClient(int id, Client client)
         {
             if (id != client.Id)
@@ -86,6 +113,7 @@ namespace ComputerCourses.Controllers
 
         // DELETE: api/Clients/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteClient(int id)
         {
             var client = await _context.Clients.FindAsync(id);
@@ -104,5 +132,65 @@ namespace ComputerCourses.Controllers
         {
             return _context.Clients.Any(e => e.Id == id);
         }
+
+        [HttpPut("/ChangeUsername/{id}/{new_username}")]
+        public async Task<ActionResult<Client>> ChangeUsername(int id, string new_username)
+        {
+            var client = await _context.Clients.FindAsync(id);
+            if (client == null)
+            {
+                return NotFound();
+            }
+            client.Username = new_username;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ClientExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return client;
+        }
+
+        [HttpPut("/ChangePassword/{id}/{new_password}")]
+        public async Task<ActionResult<Client>> ChangePassword(int id, string new_password)
+        {
+            var client = await _context.Clients.FindAsync(id);
+            if (client == null)
+            {
+                return NotFound();
+            }
+            client.Password = new_password;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ClientExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return client;
+        }
+
+        
     }
 }

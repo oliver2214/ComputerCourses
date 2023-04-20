@@ -272,3 +272,4 @@ C:\Users\dimat\source\repos\ComputerCourses\ComputerCourses\bin\Debug\net6.0\Mic
 C:\Users\dimat\source\repos\ComputerCourses\ComputerCourses\bin\Debug\net6.0\ComputerCourses.staticwebassets.runtime.json
 C:\Users\dimat\source\repos\ComputerCourses\ComputerCourses\bin\Debug\net6.0\Npgsql.dll
 C:\Users\dimat\source\repos\ComputerCourses\ComputerCourses\bin\Debug\net6.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+C:\Users\dimat\source\repos\ComputerCourses\ComputerCourses\bin\Debug\net6.0\ComputerCourses.postman_collection.json

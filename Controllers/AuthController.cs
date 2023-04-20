@@ -22,47 +22,32 @@ namespace ComputerCourses.Controllers
             public string password { get; set; }
         }
 
-        [HttpPost("Client")]
+        [HttpPost("Authorization")]
         public object GetClientToken([FromBody] LoginData ld)
         {
             var user = _context.Clients.FirstOrDefault(u => u.Username == ld.login && u.Password == ld.password);
-            if (user == null)
+            var teacher = _context.Teachers.FirstOrDefault(u => u.Username == ld.login && u.Password == ld.password);
+            if (user == null && teacher == null)
             {
                 Response.StatusCode = 401;
                 return new { message = "wrong login/password" };
             }
-            return AuthOptions.GenerateToken(user.IsAdmin);
+
+            var role = user != null ? user.Role : teacher.Role;
+            return AuthOptions.GenerateToken(role);
         }
 
-        [HttpPost("Teacher")]
-        public object GetTeacherToken([FromBody] LoginData ld)
-        {
-            var user = _context.Teachers.FirstOrDefault(u => u.Username == ld.login && u.Password == ld.password);
-            if (user == null)
-            {
-                Response.StatusCode = 401;
-                return new { message = "wrong login/password" };
-            }
-            return AuthOptions.GenerateToken(user.IsAdmin);
-        }
-
+        //Убрать
         [HttpGet("jwttoken")]
         public object GetToken()
         {
-            return AuthOptions.GenerateToken();
+            return AuthOptions.GenerateToken("guest");
         }
 
         [HttpGet("jwttoken/admin")]
         public object GetAdminToken()
         {
-            return AuthOptions.GenerateToken(true);
-        }
-
-        [HttpGet("Clients")]
-        [Authorize(Roles = "admin")]
-        public async Task<ActionResult<IEnumerable<Client>>> GetClients()
-        {
-            return await _context.Clients.ToListAsync();
+            return AuthOptions.GenerateToken("admin");
         }
     }
 }

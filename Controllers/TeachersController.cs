@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComputerCourses.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace ComputerCourses.Controllers
 {
@@ -22,6 +24,7 @@ namespace ComputerCourses.Controllers
 
         // GET: api/Teachers
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<Teacher>>> GetTeachers()
         {
             return await _context.Teachers.ToListAsync();
@@ -29,6 +32,7 @@ namespace ComputerCourses.Controllers
 
         // GET: api/Teachers/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "admin, teacher")]
         public async Task<ActionResult<Teacher>> GetTeacher(int id)
         {
             var teacher = await _context.Teachers.FindAsync(id);
@@ -44,6 +48,7 @@ namespace ComputerCourses.Controllers
         // PUT: api/Teachers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin, teacher")]
         public async Task<IActionResult> PutTeacher(int id, Teacher teacher)
         {
             if (id != teacher.Id)
@@ -85,6 +90,7 @@ namespace ComputerCourses.Controllers
 
         // DELETE: api/Teachers/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin, teacher")]
         public async Task<IActionResult> DeleteTeacher(int id)
         {
             var teacher = await _context.Teachers.FindAsync(id);

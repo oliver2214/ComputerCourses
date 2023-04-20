@@ -13,13 +13,13 @@ namespace ComputerCourses.Models
         public static int LifetimeInYears => 1;
         public static SecurityKey SigningKey => new SymmetricSecurityKey(Encoding.ASCII.GetBytes(KEY));
 
-        internal static object GenerateToken(bool is_admin = false)
+        internal static object GenerateToken(string role)
         {
             var now = DateTime.UtcNow;
             var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, "user"),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, is_admin?"admin":"auth")
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, role)
                 };
             ClaimsIdentity identity =
             new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
