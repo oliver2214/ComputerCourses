@@ -48,8 +48,8 @@ namespace ComputerCourses.Controllers
         public async Task<ActionResult<Course>> GetCourse2(int id)
         {
             var Course = await _context.Courses
-        .Where(c => c.Id == id)
-        .FirstOrDefaultAsync();
+                                .Where(c => c.Id == id)
+                                .FirstOrDefaultAsync();
 
             if (Course == null)
             {
@@ -63,11 +63,55 @@ namespace ComputerCourses.Controllers
         public async Task<ActionResult<IEnumerable<Client>>> Gettest1()
         {
             var clients = await _context.Clients
-        .Select(c => new { c.Name, c.Surname })
-        .ToListAsync();
+                                .Select(c => new { c.Name, c.Surname })
+                                .ToListAsync();
             return Ok(clients);
         }
 
+        [HttpGet("/test2")]
+        public async Task<ActionResult<IEnumerable<Client>>> Gettest2()
+        {
+            var clients = await _context.Clients
+                                .Where(c => c.Role == "guest")
+                                .Select(c => new { c.Name, c.Surname, c.Role })
+                                .ToListAsync();
+            return Ok(clients);
+        }
+
+        [HttpGet("/test3")]
+        public async Task<ActionResult<IEnumerable<Client>>> Gettest3()
+        {
+            var clients = await _context.Clients
+                                .Where(c => c.Role == "guest")
+                                .Select(c => new { c.Name, c.Surname, c.Role })
+                                .OrderBy(p => p.Name)
+                                .ToListAsync();
+            return Ok(clients);
+        }
+
+        [HttpGet("/test4")]
+        public async Task<ActionResult<IEnumerable<Client>>> Gettest4()
+        {
+            var result = await _context.Clients
+                        .Join(
+                            _context.Descriptions,
+                            client => client.Id,
+                            description => description.ClientId,
+                            (client, description) => new { client, description })
+                        .Join(_context.Courses,
+                            cd => cd.description.CourseId,
+                            course => course.Id,
+                            (cd, course) => new {
+                                Surname = cd.client.Surname,
+                                Name = cd.client.Name,
+                                Title = course.Title,
+                                AvgMarks = cd.description.AverageMark()
+                            })
+                        .OrderBy(c => c.Title)
+                        .ToListAsync();
+            return Ok(result);
+        }
+        
         // PUT: api/Clients/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

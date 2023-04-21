@@ -23,5 +23,16 @@ namespace ComputerCourses.Controllers
         {
             return await _context.Descriptions.ToListAsync();
         }
+
+        // POST: api/Descriptions
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Description>> PostDescription(Description Description)
+        {
+            _context.Descriptions.Add(Description);
+            await _context.SaveChangesAsync();
+
+            return Description;
+        }
     }
 }
