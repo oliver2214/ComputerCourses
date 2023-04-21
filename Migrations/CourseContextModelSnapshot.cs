@@ -31,6 +31,10 @@ namespace ComputerCourses.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -64,12 +68,8 @@ namespace ComputerCourses.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
+                    b.Property<int>("MaxStudents")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
@@ -77,10 +77,11 @@ namespace ComputerCourses.Migrations
                     b.Property<int>("StudyDuration")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("TeacherId")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("StudyStart")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<List<string>>("Technologies")
+                        .IsRequired()
                         .HasColumnType("text[]");
 
                     b.Property<string>("Title")
@@ -88,8 +89,6 @@ namespace ComputerCourses.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TeacherId");
 
                     b.ToTable("Courses");
                 });
@@ -107,9 +106,6 @@ namespace ComputerCourses.Migrations
 
                     b.Property<int>("CourseId")
                         .HasColumnType("integer");
-
-                    b.Property<bool>("Ended")
-                        .HasColumnType("boolean");
 
                     b.Property<List<int>>("Marks")
                         .IsRequired()
@@ -163,11 +159,19 @@ namespace ComputerCourses.Migrations
                     b.ToTable("Teachers");
                 });
 
-            modelBuilder.Entity("ComputerCourses.Models.Course", b =>
+            modelBuilder.Entity("CourseTeacher", b =>
                 {
-                    b.HasOne("ComputerCourses.Models.Teacher", null)
-                        .WithMany("Courses")
-                        .HasForeignKey("TeacherId");
+                    b.Property<int>("CoursesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TeachersId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CoursesId", "TeachersId");
+
+                    b.HasIndex("TeachersId");
+
+                    b.ToTable("CourseTeacher");
                 });
 
             modelBuilder.Entity("ComputerCourses.Models.Description", b =>
@@ -185,6 +189,21 @@ namespace ComputerCourses.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("CourseTeacher", b =>
+                {
+                    b.HasOne("ComputerCourses.Models.Course", null)
+                        .WithMany()
+                        .HasForeignKey("CoursesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ComputerCourses.Models.Teacher", null)
+                        .WithMany()
+                        .HasForeignKey("TeachersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ComputerCourses.Models.Client", b =>
                 {
                     b.Navigation("Descriptions");
@@ -193,11 +212,6 @@ namespace ComputerCourses.Migrations
             modelBuilder.Entity("ComputerCourses.Models.Course", b =>
                 {
                     b.Navigation("Descriptions");
-                });
-
-            modelBuilder.Entity("ComputerCourses.Models.Teacher", b =>
-                {
-                    b.Navigation("Courses");
                 });
 #pragma warning restore 612, 618
         }

@@ -6,11 +6,12 @@ namespace ComputerCourses.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string Description { get; set; }
         public decimal Price { get; set; }
-        public bool IsActive { get; set; }
-        public List<string>? Technologies { get; set; }
+        public List<string> Technologies { get; set; } = new List<string>();
         public int StudyDuration { get; set; }
+        public int MaxStudents { get; set; }
+        public DateTime StudyStart { get; set; }
         public List<Description>? Descriptions { get; set; }
+        public List<Teacher>? Teachers { get; set; }
     }
 }

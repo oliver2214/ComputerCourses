@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComputerCourses.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ComputerCourses.Controllers
 {
@@ -178,63 +179,133 @@ namespace ComputerCourses.Controllers
         }
 
         [HttpPut("/ChangeUsername/{id}/{new_username}")]
-        public async Task<ActionResult<Client>> ChangeUsername(int id, string new_username)
+        [Authorize]
+        public async Task<ActionResult<object>> ChangeUsername(int id, string new_username)
         {
-            var client = await _context.Clients.FindAsync(id);
-            if (client == null)
-            {
-                return NotFound();
-            }
-            client.Username = new_username;
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
 
-            try
+            if (role == "guest")
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ClientExists(id))
+                var client = await _context.Clients.FindAsync(id);
+                if (client == null)
                 {
                     return NotFound();
                 }
-                else
+                var usernameExists = await _context.Clients.AnyAsync(c => c.Username == new_username);
+                if (usernameExists)
                 {
-                    throw;
+                    return BadRequest("Username already exists");
                 }
+                client.Username = new_username;
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ClientExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return client;
             }
 
-            return client;
-        }
-
-        [HttpPut("/ChangePassword/{id}/{new_password}")]
-        public async Task<ActionResult<Client>> ChangePassword(int id, string new_password)
-        {
-            var client = await _context.Clients.FindAsync(id);
-            if (client == null)
+            if (role == "teacher")
             {
-                return NotFound();
-            }
-            client.Password = new_password;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ClientExists(id))
+                var teacher = await _context.Teachers.FindAsync(id);
+                if (teacher == null)
                 {
                     return NotFound();
                 }
-                else
+                var usernameExists = await _context.Teachers.AnyAsync(c => c.Username == new_username);
+                if (usernameExists)
                 {
-                    throw;
+                    return BadRequest("Username already exists");
                 }
+                teacher.Username = new_username;
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ClientExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return teacher;
             }
-
-            return client;
+            else { return BadRequest("Unknown Authorization role"); }
         }
 
-        
+        [HttpPut("/ChangePassword/{id}/{new_Password}")]
+        [Authorize]
+        public async Task<ActionResult<object>> ChangePassword(int id, string new_password)
+        {
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (role == "guest")
+            {
+                var client = await _context.Clients.FindAsync(id);
+                if (client == null)
+                {
+                    return NotFound();
+                }
+                client.Password = new_password;
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ClientExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return client;
+            }
+
+            if (role == "teacher")
+            {
+                var teacher = await _context.Teachers.FindAsync(id);
+                if (teacher == null)
+                {
+                    return NotFound();
+                }
+                teacher.Password = new_password;
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ClientExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return teacher;
+            }
+            else { return BadRequest("Unknown Authorization role"); }
+        }
     }
 }
