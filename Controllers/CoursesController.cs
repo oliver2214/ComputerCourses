@@ -42,7 +42,10 @@ namespace ComputerCourses.Controllers
             return course;
         }
 
+        
+
         [HttpGet("GetCountClientsByCourse/{CourseId}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<(string CourseName, int StudentCount)>>> GetCountClientsByCourse(int CourseId)
         {
             if (!CourseExists(CourseId))
@@ -66,6 +69,25 @@ namespace ComputerCourses.Controllers
         }
 
 
+        [HttpGet("GetCountClientsByCourses")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<(string CourseName, int StudentCount)>>> GetCountClientsByCourses()
+        {
+            var studentsCount = await _context.Descriptions
+                                .Join(_context.Courses,
+                                    d => d.CourseId,
+                                    c => c.Id,
+                                    (d, c) => new { d, c })
+                                .GroupBy(d => d.c.Title)
+                                .Select(g => new { Title = g.Key, studentsCount = g.Count() })
+                                .ToListAsync();
+            if (studentsCount == null)
+            {
+                return NotFound();
+            }
+            return Ok(studentsCount);
+        }
+
         [HttpGet("GetCoursesStartSoon")]
         public async Task<ActionResult<IEnumerable<Course>>> GetCoursesStartSoon()
         {
@@ -79,7 +101,9 @@ namespace ComputerCourses.Controllers
             return Ok(result);
         }
 
+
         [HttpGet("GetTotalRevenueByCourses")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<(string Title, int StudentCount, int TotalRevenue)>>> GetTotalRevenueByCourses()
         {
             var result = await _context.Courses

@@ -46,6 +46,7 @@ namespace ComputerCourses.Controllers
 
 
         [HttpGet("GetClientsByCourse/{CourseId}")]
+        [Authorize(Roles = "admin, teacher")]
         public async Task<ActionResult<IEnumerable<Client>>> GetClientsByCourse(int CourseId)
         {
             var result = await _context.Clients
@@ -71,6 +72,7 @@ namespace ComputerCourses.Controllers
         }
 
         [HttpGet("GetClientMarksByCourse/{ClientId}/{CourseId}")]
+        [Authorize]
         public async Task<ActionResult<Client>> GetClientMarksByCourse(int ClientId, int CourseId)
         {
             var result = await _context.Clients.Where(c => c.Id == ClientId)
@@ -98,6 +100,7 @@ namespace ComputerCourses.Controllers
         }
 
         [HttpGet("GetClientsMarksByCourse/{CourseId}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Client>>> GetClientsMarksByCourse(int CourseId)
         {
             var result = await _context.Clients

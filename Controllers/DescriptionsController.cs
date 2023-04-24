@@ -17,16 +17,23 @@ namespace ComputerCourses.Controllers
             _context = context;
         }
 
+        
+
         // GET: api/Descriptions
         [HttpGet]
+        [Authorize(Roles = "admin, teacher")]
         public async Task<ActionResult<IEnumerable<Description>>> GetDescriptions()
         {
-            return await _context.Descriptions.ToListAsync();
+            return await _context.Descriptions.OrderBy(d => d.Id).ToListAsync();
         }
 
-        // POST: api/Descriptions
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        
+
+        //POST: api/Descriptions
+        //To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Description>> PostDescription(Description Description)
         {
             _context.Descriptions.Add(Description);
@@ -34,5 +41,22 @@ namespace ComputerCourses.Controllers
 
             return Description;
         }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteDescription(int id)
+        {
+            var description = await _context.Descriptions.FindAsync(id);
+            if (description == null)
+            {
+                return NotFound();
+            }
+
+            _context.Descriptions.Remove(description);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
     }
 }

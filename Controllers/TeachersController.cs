@@ -46,6 +46,7 @@ namespace ComputerCourses.Controllers
         }
 
         [HttpGet("GetCoursesByTeacher/{TeacherId}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Course>>> GetCoursesByTeacher(int TeacherId)
         {
             if (!TeacherExists(TeacherId))
@@ -99,6 +100,7 @@ namespace ComputerCourses.Controllers
         }
 
         [HttpPut("AddMarkForStudent/{courseId}/{studentId}")]
+        [Authorize(Roles = "teacher")]
         public IActionResult AddMarkForStudent(int courseId, int studentId, [FromForm] int mark)
         {
             // Находим запись Description для указанного курса и студента
