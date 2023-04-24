@@ -21,16 +21,5 @@ namespace ComputerCourses.Models
             else
                 return $"Добро пожаловать {Name} {Surname}!";
         }
-
-        public void ChangeUsername(string new_username)
-        {
-            Username = new_username;
-        }
-
-        public void ChangePassword(string new_password)
-        {
-            Password = new_password;
-        }
-
     }
 }

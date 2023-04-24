@@ -44,75 +44,86 @@ namespace ComputerCourses.Controllers
             return client;
         }
 
-        //GET: api/Clients/5
-        [HttpGet("/get2/{id}")]
-        public async Task<ActionResult<Course>> GetCourse2(int id)
-        {
-            var Course = await _context.Courses
-                                .Where(c => c.Id == id)
-                                .FirstOrDefaultAsync();
 
-            if (Course == null)
-            {
-                return NotFound();
-            }
-
-            return Course;
-        }
-
-        [HttpGet("/test1")]
-        public async Task<ActionResult<IEnumerable<Client>>> Gettest1()
-        {
-            var clients = await _context.Clients
-                                .Select(c => new { c.Name, c.Surname })
-                                .ToListAsync();
-            return Ok(clients);
-        }
-
-        [HttpGet("/test2")]
-        public async Task<ActionResult<IEnumerable<Client>>> Gettest2()
-        {
-            var clients = await _context.Clients
-                                .Where(c => c.Role == "guest")
-                                .Select(c => new { c.Name, c.Surname, c.Role })
-                                .ToListAsync();
-            return Ok(clients);
-        }
-
-        [HttpGet("/test3")]
-        public async Task<ActionResult<IEnumerable<Client>>> Gettest3()
-        {
-            var clients = await _context.Clients
-                                .Where(c => c.Role == "guest")
-                                .Select(c => new { c.Name, c.Surname, c.Role })
-                                .OrderBy(p => p.Name)
-                                .ToListAsync();
-            return Ok(clients);
-        }
-
-        [HttpGet("/test4")]
-        public async Task<ActionResult<IEnumerable<Client>>> Gettest4()
+        [HttpGet("GetClientsByCourse/{CourseId}")]
+        public async Task<ActionResult<IEnumerable<Client>>> GetClientsByCourse(int CourseId)
         {
             var result = await _context.Clients
-                        .Join(
-                            _context.Descriptions,
+                        .Join(_context.Descriptions,
                             client => client.Id,
                             description => description.ClientId,
                             (client, description) => new { client, description })
-                        .Join(_context.Courses,
+                        .Join(_context.Courses.Where(c => c.Id == CourseId),
                             cd => cd.description.CourseId,
                             course => course.Id,
-                            (cd, course) => new {
-                                Surname = cd.client.Surname,
-                                Name = cd.client.Name,
-                                Title = course.Title,
-                                AvgMarks = cd.description.AverageMark()
-                            })
-                        .OrderBy(c => c.Title)
+                            (cd, course) => new { cd.client, course })
+                        .Select(d => new
+                        {
+                            Surname = d.client.Surname,
+                            Name = d.client.Name,
+                        })
                         .ToListAsync();
+            if (result == null)
+            {
+                return NotFound();
+            }
             return Ok(result);
         }
-        
+
+        [HttpGet("GetClientMarksByCourse/{ClientId}/{CourseId}")]
+        public async Task<ActionResult<Client>> GetClientMarksByCourse(int ClientId, int CourseId)
+        {
+            var result = await _context.Clients.Where(c => c.Id == ClientId)
+                        .Join(_context.Descriptions,
+                            client => client.Id,
+                            description => description.ClientId,
+                            (client, description) => new { client, description })
+                        .Join(_context.Courses.Where(c => c.Id == CourseId),
+                            cd => cd.description.CourseId,
+                            course => course.Id,
+                            (cd, course) => new { cd, course })
+                        .Select(d => new
+                        {
+                            Surname = d.cd.client.Surname,
+                            Name = d.cd.client.Name,
+                            Marks = d.cd.description.Marks,
+                            AverageMark = d.cd.description.AverageMark(),
+                        })
+                        .FirstOrDefaultAsync();
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        [HttpGet("GetClientsMarksByCourse/{CourseId}")]
+        public async Task<ActionResult<IEnumerable<Client>>> GetClientsMarksByCourse(int CourseId)
+        {
+            var result = await _context.Clients
+                        .Join(_context.Descriptions,
+                            client => client.Id,
+                            description => description.ClientId,
+                            (client, description) => new { client, description })
+                        .Join(_context.Courses.Where(c => c.Id == CourseId),
+                            cd => cd.description.CourseId,
+                            course => course.Id,
+                            (cd, course) => new { cd, course })
+                        .Select(d => new
+                        {
+                            Surname = d.cd.client.Surname,
+                            Name = d.cd.client.Name,
+                            Marks = d.cd.description.Marks,
+                            AverageMark = d.cd.description.AverageMark(),
+                        })
+                        .ToListAsync();
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
         // PUT: api/Clients/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -178,134 +189,6 @@ namespace ComputerCourses.Controllers
             return _context.Clients.Any(e => e.Id == id);
         }
 
-        [HttpPut("/ChangeUsername/{id}/{new_username}")]
-        [Authorize]
-        public async Task<ActionResult<object>> ChangeUsername(int id, string new_username)
-        {
-            var role = User.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (role == "guest")
-            {
-                var client = await _context.Clients.FindAsync(id);
-                if (client == null)
-                {
-                    return NotFound();
-                }
-                var usernameExists = await _context.Clients.AnyAsync(c => c.Username == new_username);
-                if (usernameExists)
-                {
-                    return BadRequest("Username already exists");
-                }
-                client.Username = new_username;
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ClientExists(id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return client;
-            }
-
-            if (role == "teacher")
-            {
-                var teacher = await _context.Teachers.FindAsync(id);
-                if (teacher == null)
-                {
-                    return NotFound();
-                }
-                var usernameExists = await _context.Teachers.AnyAsync(c => c.Username == new_username);
-                if (usernameExists)
-                {
-                    return BadRequest("Username already exists");
-                }
-                teacher.Username = new_username;
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ClientExists(id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return teacher;
-            }
-            else { return BadRequest("Unknown Authorization role"); }
-        }
-
-        [HttpPut("/ChangePassword/{id}/{new_Password}")]
-        [Authorize]
-        public async Task<ActionResult<object>> ChangePassword(int id, string new_password)
-        {
-            var role = User.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (role == "guest")
-            {
-                var client = await _context.Clients.FindAsync(id);
-                if (client == null)
-                {
-                    return NotFound();
-                }
-                client.Password = new_password;
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ClientExists(id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return client;
-            }
-
-            if (role == "teacher")
-            {
-                var teacher = await _context.Teachers.FindAsync(id);
-                if (teacher == null)
-                {
-                    return NotFound();
-                }
-                teacher.Password = new_password;
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ClientExists(id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return teacher;
-            }
-            else { return BadRequest("Unknown Authorization role"); }
-        }
+        
     }
 }

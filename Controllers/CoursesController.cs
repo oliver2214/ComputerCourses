@@ -42,6 +42,64 @@ namespace ComputerCourses.Controllers
             return course;
         }
 
+        [HttpGet("GetCountClientsByCourse/{CourseId}")]
+        public async Task<ActionResult<IEnumerable<(string CourseName, int StudentCount)>>> GetCountClientsByCourse(int CourseId)
+        {
+            if (!CourseExists(CourseId))
+            {
+                return NotFound();
+            }
+            var studentsCount = await _context.Descriptions
+                                .Where(d => d.CourseId == CourseId)
+                                .Join(_context.Courses,
+                                    d => d.CourseId,
+                                    c => c.Id,
+                                    (d, c) => new { d, c })
+                                .GroupBy(d => d.c.Title)
+                                .Select(g => new { Title = g.Key, studentsCount = g.Count() })
+                                .ToListAsync();
+            if (studentsCount == null)
+            {
+                return NotFound();
+            }
+            return Ok(studentsCount);
+        }
+
+
+        [HttpGet("GetCoursesStartSoon")]
+        public async Task<ActionResult<IEnumerable<Course>>> GetCoursesStartSoon()
+        {
+            var result = await _context.Courses
+                                .Where(c => c.StudyStart <= DateTime.Now.AddMonths(3).ToUniversalTime() && c.StudyStart >= DateTime.Now.ToUniversalTime())
+                                .ToListAsync();
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        [HttpGet("GetTotalRevenueByCourses")]
+        public async Task<ActionResult<IEnumerable<(string Title, int StudentCount, int TotalRevenue)>>> GetTotalRevenueByCourses()
+        {
+            var result = await _context.Courses
+                        .Join(_context.Descriptions,
+                                    c => c.Id,
+                                    d => d.CourseId,
+                                    (c, d) => new { course = c, description = d })
+                        .GroupBy(c => new { c.course.Id, c.course.Title })
+                        .Select(g => new {
+                            Title = g.Key.Title,
+                            StudentsCount = g.Count(),
+                            TotalRevenue = g.Sum(c => c.course.Price)
+                        })
+                        .ToListAsync();
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
         // PUT: api/Courses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

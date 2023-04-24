@@ -45,6 +45,27 @@ namespace ComputerCourses.Controllers
             return teacher;
         }
 
+        [HttpGet("GetCoursesByTeacher/{TeacherId}")]
+        public async Task<ActionResult<IEnumerable<Course>>> GetCoursesByTeacher(int TeacherId)
+        {
+            if (!TeacherExists(TeacherId))
+            {
+                return NotFound();
+            }
+            var result = await _context.Teachers
+                                    .Where(t => t.Id == TeacherId)
+                                    .SelectMany(c => c.Courses)
+                                    .Select(g => new { g.Title })
+                                    .ToListAsync();
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        
+
         // PUT: api/Teachers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -75,6 +96,28 @@ namespace ComputerCourses.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpPut("AddMarkForStudent/{courseId}/{studentId}")]
+        public IActionResult AddMarkForStudent(int courseId, int studentId, [FromForm] int mark)
+        {
+            // Находим запись Description для указанного курса и студента
+            var description = _context.Descriptions.FirstOrDefault(d => d.CourseId == courseId && d.ClientId == studentId);
+
+            // Если запись не найдена, возвращаем 404 ошибку
+            if (description == null)
+            {
+                return NotFound();
+            }
+
+            // Обновляем список оценок
+            description.Marks.Add(mark);
+
+            // Сохраняем изменения
+            _context.SaveChanges();
+
+            // Возвращаем успешный результат
+            return Ok();
         }
 
         // POST: api/Teachers
