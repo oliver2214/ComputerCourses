@@ -11,6 +11,7 @@
     <WebStackScaffolding_DbContextTypeFullName>ComputerCourses.Models.CourseContext</WebStackScaffolding_DbContextTypeFullName>
     <WebStackScaffolding_IsAsyncSelected>False</WebStackScaffolding_IsAsyncSelected>
     <ActiveDebugProfile>ComputerCourses</ActiveDebugProfile>
+    <NameOfLastUsedPublishProfile>C:\Users\dimat\source\repos\ComputerCourses\ComputerCourses\Properties\PublishProfiles\PortableFolderProfile.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>

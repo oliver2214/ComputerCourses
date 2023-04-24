@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\dimat\\source\\repos\\ComputerCourses\\ComputerCourses\\wwwroot\\Index.html",
+      "PackagePath": "staticwebassets\\Index.html"
+    },
+    {
+      "Id": "obj\\Release\\net6.0\\staticwebassets\\msbuild.ComputerCourses.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Release\\net6.0\\staticwebassets\\msbuild.build.ComputerCourses.props",
+      "PackagePath": "build\\ComputerCourses.props"
+    },
+    {
+      "Id": "obj\\Release\\net6.0\\staticwebassets\\msbuild.buildMultiTargeting.ComputerCourses.props",
+      "PackagePath": "buildMultiTargeting\\ComputerCourses.props"
+    },
+    {
+      "Id": "obj\\Release\\net6.0\\staticwebassets\\msbuild.buildTransitive.ComputerCourses.props",
+      "PackagePath": "buildTransitive\\ComputerCourses.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

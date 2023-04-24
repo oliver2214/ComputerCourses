@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "Hash": "4+kqkqq+WIYQtxh9IAen0XdoIzByO9E0Jffelwd742k=",
+  "Source": "ComputerCourses",
+  "BasePath": "_content/ComputerCourses",
+  "Mode": "Default",
+  "ManifestType": "Publish",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "ComputerCourses\\wwwroot",
+      "Source": "ComputerCourses",
+      "ContentRoot": "C:\\Users\\dimat\\source\\repos\\ComputerCourses\\ComputerCourses\\wwwroot\\",
+      "BasePath": "_content/ComputerCourses",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\dimat\\source\\repos\\ComputerCourses\\ComputerCourses\\wwwroot\\Index.html",
+      "SourceId": "ComputerCourses",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\dimat\\source\\repos\\ComputerCourses\\ComputerCourses\\wwwroot\\",
+      "BasePath": "_content/ComputerCourses",
+      "RelativePath": "Index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Index.html"
+    }
+  ]
+}

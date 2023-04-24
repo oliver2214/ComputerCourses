@@ -127,6 +127,33 @@ namespace ComputerCourses.Controllers
             return Ok(result);
         }
 
+        [HttpGet("GetClientTable/{ClientId}")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<Client>>> GetClientTable(int ClientId)
+        {
+            var result = await _context.Clients.Where(c => c.Id == ClientId)
+                        .Join(_context.Descriptions,
+                            client => client.Id,
+                            description => description.ClientId,
+                            (client, description) => new { client, description })
+                        .Join(_context.Courses,
+                            cd => cd.description.CourseId,
+                            course => course.Id,
+                            (cd, course) => new { cd, course })
+                        .Select(d => new
+                        {
+                            CourseTitle = d.course.Title,
+                            Marks = d.cd.description.Marks,
+                            AverageMark = d.cd.description.AverageMark(),
+                        })
+                        .ToListAsync();
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
         // PUT: api/Clients/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

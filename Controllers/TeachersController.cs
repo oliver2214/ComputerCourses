@@ -99,9 +99,9 @@ namespace ComputerCourses.Controllers
             return NoContent();
         }
 
-        [HttpPut("AddMarkForStudent/{courseId}/{studentId}")]
+        [HttpPut("AddMarkForStudent/{courseId}/{studentId}/{teacherId}")]
         [Authorize(Roles = "teacher")]
-        public IActionResult AddMarkForStudent(int courseId, int studentId, [FromForm] int mark)
+        public IActionResult AddMarkForStudent(int courseId, int studentId, [FromForm] int mark, int teacherId)
         {
             // Находим запись Description для указанного курса и студента
             var description = _context.Descriptions.FirstOrDefault(d => d.CourseId == courseId && d.ClientId == studentId);
@@ -112,6 +112,16 @@ namespace ComputerCourses.Controllers
                 return NotFound();
             }
 
+            var teachers = _context.Teachers
+                                .Where(t => t.Id == teacherId)
+                                .SelectMany(c => c.Courses)
+                                .Where(c => c.Id == courseId)
+                                .FirstOrDefault();
+
+            if (teachers == null)
+            {
+                return StatusCode(403, "You do not have access to this course");
+            }
             // Обновляем список оценок
             description.Marks.Add(mark);
 
