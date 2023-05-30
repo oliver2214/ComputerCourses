@@ -10,7 +10,7 @@
 			"name": "Clients",
 			"item": [
 				{
-					"name": "get clients",
+					"name": "get clients (admin)",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -30,7 +30,7 @@
 					"response": []
 				},
 				{
-					"name": "get client by id",
+					"name": "get client by id (authorized)",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -77,10 +77,43 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "add client",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Artem\",\r\n    \"surname\": \"Zarvigorov\",\r\n    \"courseId\": 0,\r\n    \"username\": \"amiri\",\r\n    \"password\": \"12345\",\r\n    \"role\": \"guest\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:7151/api/Clients",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7151",
+									"path": [
+										"api",
+										"Clients"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
 				},
 				{
-					"name": "update client by id",
+					"name": "update client by id (authorized)",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -107,10 +140,44 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "update client by id (authorized)",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": 3,\r\n    \"name\": \"Artem\",\r\n    \"surname\": \"Zarvigorov\",\r\n    \"username\": \"amiri\",\r\n    \"password\": \"12345\",\r\n    \"role\": \"guest\",\r\n    \"courses\": null\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:7151/api/Clients/3",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7151",
+									"path": [
+										"api",
+										"Clients",
+										"3"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
 				},
 				{
-					"name": "delete client by id",
+					"name": "delete client by id (admin)",
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -129,14 +196,9 @@
 						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "Auth",
-			"item": [
+				},
 				{
-					"name": "get auth token",
+					"name": "GetClientsByCourse (admin, teacher)",
 					"request": {
 						"method": "GET",
 						"header": []
@@ -144,7 +206,7 @@
 					"response": []
 				},
 				{
-					"name": "get admin token",
+					"name": "GetClientMarksByCourse (authorized)",
 					"request": {
 						"method": "GET",
 						"header": []
@@ -152,67 +214,10 @@
 					"response": []
 				},
 				{
-					"name": "get client token from body",
+					"name": "GetClientsMarksByCourse (authorized)",
 					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "login",
-									"value": "oliver",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "12345",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "https://localhost:7151/api/auth",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7151",
-							"path": [
-								"api",
-								"auth"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "get teacher token from body",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"login\": \"oliver\",\r\n  \"password\": \"12345\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://localhost:7151/api/auth/teacher",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7151",
-							"path": [
-								"api",
-								"auth",
-								"teacher"
-							]
-						}
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				}
@@ -238,7 +243,7 @@
 					"response": []
 				},
 				{
-					"name": "add course",
+					"name": "add course (admin, teacher)",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -277,7 +282,7 @@
 					"response": []
 				},
 				{
-					"name": "update course by id",
+					"name": "update course by id (admin, teacher)",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -301,6 +306,508 @@
 								"api",
 								"Clients",
 								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete course by id (admin, teacher)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7151/api/Courses/3",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7151",
+							"path": [
+								"api",
+								"Courses",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCountClientsByCourse (authorized)",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "GetCountClientsByCourses (authorized)",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "GetCoursesStartSoon",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "GetTotalRevenueByCourses (admin)",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Teachers",
+			"item": [
+				{
+					"name": "get teachers (admin)",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "get teacher by id (admin, teacher)",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "add teacher",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Tatyana\",\r\n  \"surname\": \"Mihailovna\",\r\n  \"employmentDate\": null,\r\n  \"username\": \"papilina\",\r\n  \"password\": \"12345\",\r\n  \"role\": \"teacher\",\r\n  \"courses\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7151/api/Teachers",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7151",
+							"path": [
+								"api",
+								"Teachers"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "add teacher",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Tatyana\",\r\n  \"surname\": \"Mihailovna\",\r\n  \"employmentDate\": null,\r\n  \"username\": \"papilina\",\r\n  \"password\": \"12345\",\r\n  \"role\": \"teacher\",\r\n  \"courses\": null\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:7151/api/Teachers",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7151",
+									"path": [
+										"api",
+										"Teachers"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "update teacher by id (admin, teacher)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXNlciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6InRlYWNoZXIiLCJuYmYiOjE2ODEwMzk2NjAsImV4cCI6MTcxMjY2MjA2MCwiaXNzIjoiTXlBdXRoU2VydmVyIiwiYXVkIjoiTXlBdXRoQ2xpZW50In0.8AbSk5NSjsgknoPj30j9g-KIGdZzI43T7JIGzNltgP0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 2,\r\n    \"name\": \"Alvin\",\r\n    \"surname\": \"Walsh\",\r\n    \"employmentDate\": \"2023-02-21T15:23:29.449Z\",\r\n    \"username\": \"teacher2\",\r\n    \"password\": \"12345\",\r\n    \"role\": \"teacher\",\r\n    \"courses\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7151/api/Teachers/2",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7151",
+							"path": [
+								"api",
+								"Teachers",
+								"2"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "update teacher by id (admin, teacher)",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": 2,\r\n    \"name\": \"John\",\r\n    \"surname\": \"Doe\",\r\n    \"employmentDate\": null,\r\n    \"username\": \"teach\",\r\n    \"password\": \"12345\",\r\n    \"role\": \"teacher\",\r\n    \"courses\": null\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:7151/api/Teachers/2",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7151",
+									"path": [
+										"api",
+										"Teachers",
+										"2"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "delete teacher by id (admin, teacher)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXNlciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6InRlYWNoZXIiLCJuYmYiOjE2ODEwMzk2NjAsImV4cCI6MTcxMjY2MjA2MCwiaXNzIjoiTXlBdXRoU2VydmVyIiwiYXVkIjoiTXlBdXRoQ2xpZW50In0.8AbSk5NSjsgknoPj30j9g-KIGdZzI43T7JIGzNltgP0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7151/api/Teachers/2",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7151",
+							"path": [
+								"api",
+								"Teachers",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddMarkForStudent (teacher)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "mark",
+									"value": "5",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:7151/api/Teachers/AddMarkForStudent/1/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7151",
+							"path": [
+								"api",
+								"Teachers",
+								"AddMarkForStudent",
+								"1",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCoursesByTeacher (authorized)",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UserManagment",
+			"item": [
+				{
+					"name": "get token (authorization)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "login",
+									"value": "oliver",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:7151/api/auth",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7151",
+							"path": [
+								"api",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChangeUsername",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXNlciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6InRlYWNoZXIiLCJuYmYiOjE2ODIwOTA5NzUsImV4cCI6MTcxMzcxMzM3NSwiaXNzIjoiTXlBdXRoU2VydmVyIiwiYXVkIjoiTXlBdXRoQ2xpZW50In0.iOp-TD0ViemQ6Al7dgXWttR51PKUZWwBrtybiXAXa9Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "new_username",
+									"value": "teacher1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:7151/api/usermanagment/ChangeUsername/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7151",
+							"path": [
+								"api",
+								"usermanagment",
+								"ChangeUsername",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChangePassword",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXNlciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6InRlYWNoZXIiLCJuYmYiOjE2ODIwOTA5NzUsImV4cCI6MTcxMzcxMzM3NSwiaXNzIjoiTXlBdXRoU2VydmVyIiwiYXVkIjoiTXlBdXRoQ2xpZW50In0.iOp-TD0ViemQ6Al7dgXWttR51PKUZWwBrtybiXAXa9Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7151/api/usermanagment/ChangePassword/1/123456",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7151",
+							"path": [
+								"api",
+								"usermanagment",
+								"ChangePassword",
+								"1",
+								"123456"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Descriptions",
+			"item": [
+				{
+					"name": "get descriptions (admin, teacher)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXNlciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6InRlYWNoZXIiLCJuYmYiOjE2ODIzMjc0NzIsImV4cCI6MTcxMzk0OTg3MiwiaXNzIjoiTXlBdXRoU2VydmVyIiwiYXVkIjoiTXlBdXRoQ2xpZW50In0.UR5m1lE8SlFeOxLimCElvwyipZyH0WJw06arLwwU_UM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7151/api/Descriptions",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7151",
+							"path": [
+								"api",
+								"Descriptions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add description (authorized)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXNlciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6InRlYWNoZXIiLCJuYmYiOjE2ODIzMjc0NzIsImV4cCI6MTcxMzk0OTg3MiwiaXNzIjoiTXlBdXRoU2VydmVyIiwiYXVkIjoiTXlBdXRoQ2xpZW50In0.UR5m1lE8SlFeOxLimCElvwyipZyH0WJw06arLwwU_UM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 9,\r\n  \"clientId\": 4,\r\n  \"courseId\": 3,\r\n  \"marks\": [],\r\n  \"studyStart\": \"2023-04-24T09:23:00.325Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7151/api/Descriptions",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7151",
+							"path": [
+								"api",
+								"Descriptions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXNlciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6InRlYWNoZXIiLCJuYmYiOjE2ODIzMjc0NzIsImV4cCI6MTcxMzk0OTg3MiwiaXNzIjoiTXlBdXRoU2VydmVyIiwiYXVkIjoiTXlBdXRoQ2xpZW50In0.UR5m1lE8SlFeOxLimCElvwyipZyH0WJw06arLwwU_UM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7151/api/Descriptions/8",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7151",
+							"path": [
+								"api",
+								"Descriptions",
+								"8"
 							]
 						}
 					},

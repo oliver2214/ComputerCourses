@@ -26,7 +26,7 @@ namespace ComputerCourses.Controllers
         [Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<Client>>> GetClients()
         {
-            return await _context.Clients.ToListAsync();
+            return await _context.Clients.OrderBy(c => c.Id).ToListAsync();
         }
 
         // GET: api/Clients/5
@@ -44,22 +44,22 @@ namespace ComputerCourses.Controllers
             return client;
         }
 
-
         [HttpGet("GetClientsByCourse/{CourseId}")]
         [Authorize(Roles = "admin, teacher")]
         public async Task<ActionResult<IEnumerable<Client>>> GetClientsByCourse(int CourseId)
         {
             var result = await _context.Clients
-                        .Join(_context.Descriptions,
+                        .Join(_context.ClientCourses,
                             client => client.Id,
-                            description => description.ClientId,
-                            (client, description) => new { client, description })
+                            ClientCourse => ClientCourse.ClientId,
+                            (client, ClientCourse) => new { client, ClientCourse })
                         .Join(_context.Courses.Where(c => c.Id == CourseId),
-                            cd => cd.description.CourseId,
+                            cd => cd.ClientCourse.CourseId,
                             course => course.Id,
                             (cd, course) => new { cd.client, course })
                         .Select(d => new
                         {
+                            Id = d.client.Id,
                             Surname = d.client.Surname,
                             Name = d.client.Name,
                         })
@@ -76,20 +76,21 @@ namespace ComputerCourses.Controllers
         public async Task<ActionResult<Client>> GetClientMarksByCourse(int ClientId, int CourseId)
         {
             var result = await _context.Clients.Where(c => c.Id == ClientId)
-                        .Join(_context.Descriptions,
+                        .Join(_context.ClientCourses,
                             client => client.Id,
-                            description => description.ClientId,
-                            (client, description) => new { client, description })
+                            ClientCourse => ClientCourse.ClientId,
+                            (client, ClientCourse) => new { client, ClientCourse })
                         .Join(_context.Courses.Where(c => c.Id == CourseId),
-                            cd => cd.description.CourseId,
+                            cd => cd.ClientCourse.CourseId,
                             course => course.Id,
                             (cd, course) => new { cd, course })
                         .Select(d => new
                         {
+                            Id = d.cd.client.Id,
                             Surname = d.cd.client.Surname,
                             Name = d.cd.client.Name,
-                            Marks = d.cd.description.Marks,
-                            AverageMark = d.cd.description.AverageMark(),
+                            Marks = d.cd.ClientCourse.Marks,
+                            AverageMark = d.cd.ClientCourse.AverageMark(),
                         })
                         .FirstOrDefaultAsync();
             if (result == null)
@@ -104,20 +105,21 @@ namespace ComputerCourses.Controllers
         public async Task<ActionResult<IEnumerable<Client>>> GetClientsMarksByCourse(int CourseId)
         {
             var result = await _context.Clients
-                        .Join(_context.Descriptions,
+                        .Join(_context.ClientCourses,
                             client => client.Id,
-                            description => description.ClientId,
-                            (client, description) => new { client, description })
+                            ClientCourse => ClientCourse.ClientId,
+                            (client, ClientCourse) => new { client, ClientCourse })
                         .Join(_context.Courses.Where(c => c.Id == CourseId),
-                            cd => cd.description.CourseId,
+                            cd => cd.ClientCourse.CourseId,
                             course => course.Id,
                             (cd, course) => new { cd, course })
                         .Select(d => new
                         {
+                            Id = d.cd.client.Id,
                             Surname = d.cd.client.Surname,
                             Name = d.cd.client.Name,
-                            Marks = d.cd.description.Marks,
-                            AverageMark = d.cd.description.AverageMark(),
+                            Marks = d.cd.ClientCourse.Marks,
+                            AverageMark = d.cd.ClientCourse.AverageMark(),
                         })
                         .ToListAsync();
             if (result == null)
@@ -132,19 +134,20 @@ namespace ComputerCourses.Controllers
         public async Task<ActionResult<IEnumerable<Client>>> GetClientTable(int ClientId)
         {
             var result = await _context.Clients.Where(c => c.Id == ClientId)
-                        .Join(_context.Descriptions,
+                        .Join(_context.ClientCourses,
                             client => client.Id,
-                            description => description.ClientId,
-                            (client, description) => new { client, description })
+                            ClientCourse => ClientCourse.ClientId,
+                            (client, ClientCourse) => new { client, ClientCourse })
                         .Join(_context.Courses,
-                            cd => cd.description.CourseId,
+                            cd => cd.ClientCourse.CourseId,
                             course => course.Id,
                             (cd, course) => new { cd, course })
                         .Select(d => new
                         {
+                            CourseId = d.course.Id,
                             CourseTitle = d.course.Title,
-                            Marks = d.cd.description.Marks,
-                            AverageMark = d.cd.description.AverageMark(),
+                            Marks = d.cd.ClientCourse.Marks,
+                            AverageMark = d.cd.ClientCourse.AverageMark(),
                         })
                         .ToListAsync();
             if (result == null)
@@ -155,10 +158,9 @@ namespace ComputerCourses.Controllers
         }
 
         // PUT: api/Clients/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize]
-        public async Task<IActionResult> PutClient(int id, Client client)
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<Client>> PutClient(int id, Client client)
         {
             if (id != client.Id)
             {
@@ -183,18 +185,23 @@ namespace ComputerCourses.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(client);
         }
 
         // POST: api/Clients
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Client>> PostClient(Client client)
         {
+            bool usernameExists = await _context.Clients.AnyAsync(c => c.Username == client.Username) || await _context.Teachers.AnyAsync(c => c.Username == client.Username);
+            if (usernameExists)
+            {
+                return BadRequest("This username is already exists");
+            }
+
             _context.Clients.Add(client);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetClient", new { id = client.Id }, client);
+            return CreatedAtAction("PostClient", new { id = client.Id }, client);
         }
 
         // DELETE: api/Clients/5
@@ -219,6 +226,5 @@ namespace ComputerCourses.Controllers
             return _context.Clients.Any(e => e.Id == id);
         }
 
-        
     }
 }

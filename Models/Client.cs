@@ -11,8 +11,7 @@ namespace ComputerCourses.Models
         public string Username { get; set; }
         public string Password { get; set; }
         public string Role { get; set; }    
-        public List<Description>? Descriptions { get; set; }
-
+        public List<ClientCourse>? ClientCourses { get; set; }
 
         public string WelcomeMessage()
         {

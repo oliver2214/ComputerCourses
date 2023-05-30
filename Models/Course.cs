@@ -10,8 +10,8 @@ namespace ComputerCourses.Models
         public List<string> Technologies { get; set; } = new List<string>();
         public int StudyDuration { get; set; }
         public int MaxStudents { get; set; }
-        public DateTime StudyStart { get; set; }
-        public List<Description>? Descriptions { get; set; }
-        public List<Teacher>? Teachers { get; set; }
+        public DateTime StudyStart { get; set; } = DateTime.Now.ToUniversalTime();
+        public List<ClientCourse>? ClientCourses { get; set; } = new List<ClientCourse>();
+        public List<Teacher>? Teachers { get; set; } = new List<Teacher>();
     }
 }

@@ -60,6 +60,33 @@ namespace ComputerCourses.Migrations
                     b.ToTable("Clients");
                 });
 
+            modelBuilder.Entity("ComputerCourses.Models.ClientCourse", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("integer");
+
+                    b.Property<List<int>>("Marks")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("ClientCourses");
+                });
+
             modelBuilder.Entity("ComputerCourses.Models.Course", b =>
                 {
                     b.Property<int>("Id")
@@ -91,36 +118,6 @@ namespace ComputerCourses.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Courses");
-                });
-
-            modelBuilder.Entity("ComputerCourses.Models.Description", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ClientId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("integer");
-
-                    b.Property<List<int>>("Marks")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
-
-                    b.Property<DateTime>("StudyStart")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("Descriptions");
                 });
 
             modelBuilder.Entity("ComputerCourses.Models.Teacher", b =>
@@ -174,19 +171,23 @@ namespace ComputerCourses.Migrations
                     b.ToTable("CourseTeacher");
                 });
 
-            modelBuilder.Entity("ComputerCourses.Models.Description", b =>
+            modelBuilder.Entity("ComputerCourses.Models.ClientCourse", b =>
                 {
-                    b.HasOne("ComputerCourses.Models.Client", null)
-                        .WithMany("Descriptions")
+                    b.HasOne("ComputerCourses.Models.Client", "Client")
+                        .WithMany("ClientCourses")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ComputerCourses.Models.Course", null)
-                        .WithMany("Descriptions")
+                    b.HasOne("ComputerCourses.Models.Course", "Course")
+                        .WithMany("ClientCourses")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("CourseTeacher", b =>
@@ -206,12 +207,12 @@ namespace ComputerCourses.Migrations
 
             modelBuilder.Entity("ComputerCourses.Models.Client", b =>
                 {
-                    b.Navigation("Descriptions");
+                    b.Navigation("ClientCourses");
                 });
 
             modelBuilder.Entity("ComputerCourses.Models.Course", b =>
                 {
-                    b.Navigation("Descriptions");
+                    b.Navigation("ClientCourses");
                 });
 #pragma warning restore 612, 618
         }

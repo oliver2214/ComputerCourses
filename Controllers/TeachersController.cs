@@ -27,7 +27,7 @@ namespace ComputerCourses.Controllers
         [Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<Teacher>>> GetTeachers()
         {
-            return await _context.Teachers.ToListAsync();
+            return await _context.Teachers.OrderBy(c => c.Id).ToListAsync();
         }
 
         // GET: api/Teachers/5
@@ -56,7 +56,7 @@ namespace ComputerCourses.Controllers
             var result = await _context.Teachers
                                     .Where(t => t.Id == TeacherId)
                                     .SelectMany(c => c.Courses)
-                                    .Select(g => new { g.Title })
+                                    .Select(g => new { CourseId = g.Id, CourseTitle = g.Title })
                                     .ToListAsync();
             if (result == null)
             {
@@ -65,13 +65,10 @@ namespace ComputerCourses.Controllers
             return Ok(result);
         }
 
-        
-
         // PUT: api/Teachers/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin, teacher")]
-        public async Task<IActionResult> PutTeacher(int id, Teacher teacher)
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<Teacher>> PutTeacher(int id, Teacher teacher)
         {
             if (id != teacher.Id)
             {
@@ -96,18 +93,18 @@ namespace ComputerCourses.Controllers
                 }
             }
 
-            return NoContent();
+            return teacher;
         }
 
-        [HttpPut("AddMarkForStudent/{courseId}/{studentId}/{teacherId}")]
+        [HttpPut("AddMarkForStudent/{courseId}")]
         [Authorize(Roles = "teacher")]
-        public IActionResult AddMarkForStudent(int courseId, int studentId, [FromForm] int mark, int teacherId)
+        public IActionResult AddMarkForStudent(int courseId, [FromForm] int studentId, [FromForm] int mark, [FromForm] int teacherId)
         {
-            // Находим запись Description для указанного курса и студента
-            var description = _context.Descriptions.FirstOrDefault(d => d.CourseId == courseId && d.ClientId == studentId);
+            // Находим запись ClientCourse для указанного курса и студента
+            var ClientCourse = _context.ClientCourses.FirstOrDefault(d => d.CourseId == courseId && d.ClientId == studentId);
 
             // Если запись не найдена, возвращаем 404 ошибку
-            if (description == null)
+            if (ClientCourse == null)
             {
                 return NotFound();
             }
@@ -123,7 +120,7 @@ namespace ComputerCourses.Controllers
                 return StatusCode(403, "You do not have access to this course");
             }
             // Обновляем список оценок
-            description.Marks.Add(mark);
+            ClientCourse.Marks.Add(mark);
 
             // Сохраняем изменения
             _context.SaveChanges();
@@ -137,6 +134,12 @@ namespace ComputerCourses.Controllers
         [HttpPost]
         public async Task<ActionResult<Teacher>> PostTeacher(Teacher teacher)
         {
+            bool usernameExists = await _context.Clients.AnyAsync(c => c.Username == teacher.Username) || await _context.Teachers.AnyAsync(c => c.Username == teacher.Username);
+            if (usernameExists)
+            {
+                return BadRequest("This username is already exists");
+            }
+
             _context.Teachers.Add(teacher);
             await _context.SaveChangesAsync();
 

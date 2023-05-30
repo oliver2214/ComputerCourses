@@ -25,7 +25,7 @@ namespace ComputerCourses.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
         {
-            return await _context.Courses.ToListAsync();
+            return await _context.Courses.OrderBy(c => c.Id).ToListAsync();
         }
 
         // GET: api/Courses/5
@@ -52,15 +52,14 @@ namespace ComputerCourses.Controllers
             {
                 return NotFound();
             }
-            var studentsCount = await _context.Descriptions
-                                .Where(d => d.CourseId == CourseId)
-                                .Join(_context.Courses,
-                                    d => d.CourseId,
-                                    c => c.Id,
-                                    (d, c) => new { d, c })
-                                .GroupBy(d => d.c.Title)
-                                .Select(g => new { Title = g.Key, studentsCount = g.Count() })
-                                .ToListAsync();
+
+            var studentsCount = await _context.ClientCourses
+                .Where(d => d.CourseId == CourseId)
+                .Include(d => d.Course)
+                .GroupBy(d => d.Course.Title)
+                .Select(g => new { CourseName = g.Key, StudentCount = g.Count() })
+                .ToListAsync();
+
             if (studentsCount == null)
             {
                 return NotFound();
@@ -73,7 +72,7 @@ namespace ComputerCourses.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<(string CourseName, int StudentCount)>>> GetCountClientsByCourses()
         {
-            var studentsCount = await _context.Descriptions
+            var studentsCount = await _context.ClientCourses
                                 .Join(_context.Courses,
                                     d => d.CourseId,
                                     c => c.Id,
@@ -107,10 +106,10 @@ namespace ComputerCourses.Controllers
         public async Task<ActionResult<IEnumerable<(string Title, int StudentCount, int TotalRevenue)>>> GetTotalRevenueByCourses()
         {
             var result = await _context.Courses
-                        .Join(_context.Descriptions,
+                        .Join(_context.ClientCourses,
                                     c => c.Id,
                                     d => d.CourseId,
-                                    (c, d) => new { course = c, description = d })
+                                    (c, d) => new { course = c, ClientCourse = d })
                         .GroupBy(c => new { c.course.Id, c.course.Title })
                         .Select(g => new {
                             Title = g.Key.Title,
@@ -125,10 +124,9 @@ namespace ComputerCourses.Controllers
             return Ok(result);
         }
         // PUT: api/Courses/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         [Authorize(Roles = "admin, teacher")]
-        public async Task<IActionResult> PutCourse(int id, Course course)
+        public async Task<ActionResult<Course>> PutCourse(int id, Course course)
         {
             if (id != course.Id)
             {
@@ -153,11 +151,10 @@ namespace ComputerCourses.Controllers
                 }
             }
 
-            return NoContent();
+            return course;
         }
 
         // POST: api/Courses
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize(Roles = "admin, teacher")]
         public async Task<ActionResult<Course>> PostCourse(Course course)
@@ -168,9 +165,34 @@ namespace ComputerCourses.Controllers
             return CreatedAtAction("GetCourse", new { id = course.Id }, course);
         }
 
+        // POST: api/Courses
+        [HttpPost("AddClientCourse")]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult> PostCourseTeacher(int courseID, int teacherID)
+        {
+            var course = await _context.Courses.FindAsync(courseID);
+            var teacher = await _context.Teachers.FindAsync(teacherID);
+
+            if (course == null || teacher == null)
+            {
+                return NotFound();
+            }
+
+            if (course.Teachers.Contains(teacher))
+            {
+                return BadRequest();
+            }
+
+            course.Teachers.Add(teacher);
+            teacher.Courses.Add(course);
+            await _context.SaveChangesAsync();
+
+            return Ok("Связь между курсом и преподавателем успешно добавлена");
+        }
+
         // DELETE: api/Courses/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, teacher")]
         public async Task<IActionResult> DeleteCourse(int id)
         {
             var course = await _context.Courses.FindAsync(id);

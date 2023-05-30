@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ComputerCourses.Models;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;

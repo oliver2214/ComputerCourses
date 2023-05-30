@@ -45,7 +45,6 @@ namespace ComputerCourses.Controllers
             }
         }
 
-
         private bool ClientExists(int id)
         {
             return _context.Clients.Any(e => e.Id == id);
