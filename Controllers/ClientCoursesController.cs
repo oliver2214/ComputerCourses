@@ -26,7 +26,6 @@ namespace ComputerCourses.Controllers
         }
 
         //POST: api/ClientCourses
-        //To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         
         [HttpPost]
         [Authorize]
@@ -44,6 +43,27 @@ namespace ComputerCourses.Controllers
             {
                 return NotFound();
             }
+
+            var existingClientCourse = await _context.ClientCourses.FirstOrDefaultAsync(cc =>
+                cc.ClientId == ClientCourse.ClientId && cc.CourseId == ClientCourse.CourseId);
+
+            if (existingClientCourse != null)
+            {
+                return Conflict("The combination of ClientId and CourseId already exists.");
+            }
+
+            var studentsCount = await _context.ClientCourses
+                .Where(d => d.CourseId == ClientCourse.CourseId)
+                .Include(d => d.Course)
+                .GroupBy(d => d.Course.Id)
+                .Select(g => new { StudentCount = g.Count() })
+                .ToListAsync();
+
+            if (course.MaxStudents <= studentsCount.Count)
+            {
+                return Conflict($"Достигнуто максимальное число учеников на курсе: {course.MaxStudents}");
+            }
+
 
             _context.ClientCourses.Add(ClientCourse);
             

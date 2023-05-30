@@ -13,5 +13,6 @@ namespace ComputerCourses.Models
         public DateTime StudyStart { get; set; } = DateTime.Now.ToUniversalTime();
         public List<ClientCourse>? ClientCourses { get; set; } = new List<ClientCourse>();
         public List<Teacher>? Teachers { get; set; } = new List<Teacher>();
+
     }
 }

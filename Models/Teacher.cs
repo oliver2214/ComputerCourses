@@ -11,12 +11,5 @@
         public string Role { get; set; }
         public List<Course>? Courses { get; set; } = new List<Course>();
 
-        public string WelcomeMessage()
-        {
-            if (Role == "admin")
-                return "Добро пожаловать. Все права доступны в полной мере!";
-            else
-                return $"Добро пожаловать преподаватель {Name} {Surname}!";
-        }
     }
 }

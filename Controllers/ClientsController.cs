@@ -71,9 +71,9 @@ namespace ComputerCourses.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetClientMarksByCourse/{ClientId}/{CourseId}")]
+        [HttpGet("GetClientMarksByCourse/{ClientId}")]
         [Authorize]
-        public async Task<ActionResult<Client>> GetClientMarksByCourse(int ClientId, int CourseId)
+        public async Task<ActionResult<Client>> GetClientMarksByCourse(int ClientId, [FromForm] int CourseId)
         {
             var result = await _context.Clients.Where(c => c.Id == ClientId)
                         .Join(_context.ClientCourses,
@@ -101,7 +101,7 @@ namespace ComputerCourses.Controllers
         }
 
         [HttpGet("GetClientsMarksByCourse/{CourseId}")]
-        [Authorize]
+        [Authorize(Roles = "admin, teacher")]
         public async Task<ActionResult<IEnumerable<Client>>> GetClientsMarksByCourse(int CourseId)
         {
             var result = await _context.Clients
@@ -153,6 +153,34 @@ namespace ComputerCourses.Controllers
             if (result == null)
             {
                 return NotFound();
+            }
+            return Ok(result);
+        }
+
+        [HttpGet("GetCoursesByClient/{ClientId}")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<Client>>> GetCoursesByClient(int ClientId)
+        {
+            var client = await _context.Clients.FindAsync(ClientId);
+
+            if (client == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _context.Clients.Where(c => c.Id == ClientId)
+                        .SelectMany(c => c.ClientCourses)
+                        .Select(d => new
+                        {
+                            CourseId = d.CourseId,
+                            CourseTitle = d.Course.Title,
+                            StudyDuration = d.Course.StudyDuration,
+                            StudyStart = d.Course.StudyStart
+                        })
+                        .ToListAsync();
+            if (result.Count == 0)
+            {
+                return Ok("Данный пользователь не записан ни на один курс.");
             }
             return Ok(result);
         }

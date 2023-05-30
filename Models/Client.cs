@@ -13,12 +13,5 @@ namespace ComputerCourses.Models
         public string Role { get; set; }    
         public List<ClientCourse>? ClientCourses { get; set; }
 
-        public string WelcomeMessage()
-        {
-            if (Role == "admin")
-                return "Добро пожаловать. Все права доступны в полной мере!";
-            else
-                return $"Добро пожаловать {Name} {Surname}!";
-        }
     }
 }

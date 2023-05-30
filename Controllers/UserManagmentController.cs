@@ -37,11 +37,11 @@ namespace ComputerCourses.Controllers
             var role = user != null ? user.Role : teacher.Role;
             if (user != null)
                 {
-                return new { token = AuthOptions.GenerateToken(user.Role), message = user.WelcomeMessage() };
+                return new { token = AuthOptions.GenerateToken(user.Role), role = user.Role };
                 }
             else
             {
-                return new { token = AuthOptions.GenerateToken(teacher.Role), message = teacher.WelcomeMessage() };
+                return new { token = AuthOptions.GenerateToken(teacher.Role), role = teacher.Role };
             }
         }
 
